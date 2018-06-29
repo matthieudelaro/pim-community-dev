@@ -83,7 +83,7 @@ define(
                                     options: {
                                         limit: 20,
                                         page: page,
-                                        catalogLocale: UserContext.get('catalogLocale')
+                                        catalogLocale: UserContext.get('catalog_default_locale')
                                     }
                                 };
                             },
@@ -171,7 +171,7 @@ define(
             convertBackendItem: function (item) {
                 return {
                     id: item.code,
-                    text: i18n.getLabel(item.labels, UserContext.get('catalogLocale'), item.code)
+                    text: i18n.getLabel(item.labels, UserContext.get('catalog_default_locale'), item.code)
                 };
             }
         });

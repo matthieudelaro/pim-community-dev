@@ -60,7 +60,7 @@ define([
                 this.$el.html(this.template({
                     attributeGroups: _.sortBy(_.values(this.attributeGroups), 'sort_order'),
                     i18n: i18n,
-                    uiLocale: UserContext.get('catalogLocale')
+                    uiLocale: UserContext.get('catalog_default_locale')
                 }));
 
                 this.$('tbody').sortable({

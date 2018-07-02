@@ -18,7 +18,7 @@ class LocaleController
     /** @var LocaleProviderInterface */
     protected $localeProvider;
 
-    /** @var NormalizeInterface */
+    /** @var NormalizerInterface */
     protected $normalizer;
 
     /**

@@ -4,6 +4,7 @@ namespace Pim\Bundle\InstallerBundle\Command;
 
 use Doctrine\DBAL\Exception\ConnectionException;
 use Pim\Bundle\InstallerBundle\CommandExecutor;
+use Pim\Bundle\InstallerBundle\Event\InstallerEvent;
 use Pim\Bundle\InstallerBundle\Event\InstallerEvents;
 use Pim\Bundle\InstallerBundle\FixtureLoader\FixtureJobLoader;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -11,7 +12,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
  * Database preparing command
@@ -117,17 +117,26 @@ class DatabaseCommand extends ContainerAwareCommand
         $entityManager = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $entityManager->clear();
 
-        $this->getEventDispatcher()->dispatch(InstallerEvents::POST_DB_CREATE);
+        $this->getEventDispatcher()->dispatch(
+            InstallerEvents::POST_DB_CREATE,
+            new InstallerEvent($this->commandExecutor)
+        );
 
         // TODO: Should be in an event subscriber
         $this->createNotMappedTables($output);
 
-        $this->getEventDispatcher()->dispatch(InstallerEvents::PRE_LOAD_FIXTURES);
+        $this->getEventDispatcher()->dispatch(
+            InstallerEvents::PRE_LOAD_FIXTURES,
+            new InstallerEvent($this->commandExecutor)
+        );
 
         if (false === $input->getOption('withoutFixtures')) {
             $this->loadFixturesStep($input, $output);
         }
-        $this->getEventDispatcher()->dispatch(InstallerEvents::POST_LOAD_FIXTURES);
+        $this->getEventDispatcher()->dispatch(
+            InstallerEvents::POST_LOAD_FIXTURES,
+            new InstallerEvent($this->commandExecutor)
+        );
 
         // TODO: Should be in an event subscriber
         $this->launchCommands();
@@ -204,15 +213,12 @@ class DatabaseCommand extends ContainerAwareCommand
                 'code'       => $jobInstance->getCode(),
                 '--no-debug' => true,
                 '--no-log'   => true,
-                '-v'         => true
+                '-v'         => true,
             ];
 
             $this->getEventDispatcher()->dispatch(
                 InstallerEvents::PRE_LOAD_FIXTURE,
-                new GenericEvent(
-                    $jobInstance->getCode(),
-                    ['command_executor' => $this->commandExecutor]
-                )
+                new InstallerEvent($this->commandExecutor, $jobInstance->getCode())
             );
             if ($input->getOption('verbose')) {
                 $output->writeln(
@@ -225,7 +231,7 @@ class DatabaseCommand extends ContainerAwareCommand
             $this->commandExecutor->runCommand('akeneo:batch:job', $params);
             $this->getEventDispatcher()->dispatch(
                 InstallerEvents::POST_LOAD_FIXTURE,
-                new GenericEvent($jobInstance->getCode())
+                new InstallerEvent($this->commandExecutor, $jobInstance->getCode())
             );
         }
         $output->writeln('');

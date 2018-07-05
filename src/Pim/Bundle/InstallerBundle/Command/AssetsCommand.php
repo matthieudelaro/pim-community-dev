@@ -3,13 +3,13 @@
 namespace Pim\Bundle\InstallerBundle\Command;
 
 use Pim\Bundle\InstallerBundle\CommandExecutor;
+use Pim\Bundle\InstallerBundle\Event\InstallerEvent;
 use Pim\Bundle\InstallerBundle\Event\InstallerEvents;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
  * Assets dump command
@@ -54,7 +54,10 @@ class AssetsCommand extends ContainerAwareCommand
     {
         $output->writeln('<info>Akeneo PIM assets</info>');
 
-        $this->getEventDispatcher()->dispatch(InstallerEvents::PRE_ASSETS_DUMP);
+        $this->getEventDispatcher()->dispatch(
+            InstallerEvents::PRE_ASSETS_DUMP,
+            new InstallerEvent($this->commandExecutor)
+        );
 
         $webDir = $this->getWebDir();
 
@@ -83,11 +86,13 @@ class AssetsCommand extends ContainerAwareCommand
             $this->commandExecutor->runCommand('assets:install', ['--relative' => true, '--symlink' => true]);
         }
 
-        $event = new GenericEvent();
-        $event->setArguments([
-            'clean'   => $input->getOption('clean'),
-            'symlink' => $input->getOption('symlink')
-        ]);
+        $event = new InstallerEvent($this->commandExecutor);
+        $event->setArguments(
+            [
+                'clean'   => $input->getOption('clean'),
+                'symlink' => $input->getOption('symlink'),
+            ]
+        );
 
         $this->getEventDispatcher()->dispatch(InstallerEvents::POST_ASSETS_DUMP, $event);
 

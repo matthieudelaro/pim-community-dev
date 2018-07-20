@@ -4,11 +4,8 @@ pim_title:
     pim_user_group_index: User groups
     oro_config_configuration_system: Configuration
 
-    pim_user_view: 'User {{ username }} | View'
-    pim_user_update: 'User {{ username }} | Edit'
+    pim_user_edit: 'User {{ username }} | Edit'
     pim_user_create: 'Users | Create'
-
-    pim_user_profile_update: '{{ username }} | Edit'
 
     pim_user_role_update: 'Role {{ role }} | Edit'
     pim_user_role_create: 'Role | Create'
@@ -31,7 +28,7 @@ pim_user_management:
                     fail: The user could not be updated.
                     fields_not_ready: "The user cannot be saved right now. The following fields are not ready: {{ fields }}"
             page_title:
-                index: "]Inf, 1] {{ count }} user|]1, Inf [{{ count }} users"
+                index: "]Inf, 1]{{ count }} user|]1, Inf[{{ count }} users"
             properties:
                 username: Username
                 name_prefix: Name prefix
@@ -67,7 +64,7 @@ pim_user_management:
         role:
             plural_label: Roles
             page_title:
-                index: "]Inf, 1] {{ count }} role|]1, Inf [{{ count }} roles"
+                index: "]Inf, 1]{{ count }} role|]1, Inf[{{ count }} roles"
             module:
                 create:
                     button: Create role
@@ -77,7 +74,7 @@ pim_user_management:
         group:
             plural_label: User groups
             page_title:
-                index: "]Inf, 1] {{ count }} group|]1, Inf [{{ count }} groups"
+                index: "]Inf, 1]{{ count }} group|]1, Inf[{{ count }} groups"
             module:
                 create:
                     button: Create group

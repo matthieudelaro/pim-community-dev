@@ -8,5 +8,6 @@ services:
         class: '%pim_localization.provider.ui_locale.class%'
         arguments:
             - '@translator'
+            - '@pim_catalog.repository.locale'
             - '%pim_localization.provider.ui_locale.min_percentage%'
             - '%pim_localization.provider.ui_locale.locale_codes%'

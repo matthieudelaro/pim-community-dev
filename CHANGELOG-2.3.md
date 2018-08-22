@@ -1,3 +1,11 @@
+# 2.3.x
+
+- PIM-7594: Fix memory leak in `pim:versioning:purge` command
+
+## BC breaks
+
+- PIM-7594: Method `Pim\Bundle\VersioningBundle\Repository\VersionRepositoryInterface::findPotentiallyPurgeableBy` returns now an CursorInterface  
+
 # 2.3.5 (2018-08-22)
 
 ## Bug fixes

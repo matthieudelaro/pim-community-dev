@@ -144,6 +144,21 @@ class PimRequirements extends SymfonyRequirements
             )
         );
 
+        $innodbPageSize = $this->getMySQLVariableValue("innodb_page_size");
+
+        $this->addPimRequirement(
+                "8192" <= $innodbPageSize,
+            null,
+            sprintf(
+                'In order for the PIM to implement full UTF8 support via MySQL utf8mb4 charset,'.
+                ' MySQL must have innodb_page_size >= 8KB.'.
+                ' Current innodb_page_size is at "%s".'.
+                ' Please change your MySQL server configuration to use the correct settings'.
+                ' (innodb_page_size is at 16KB by default on MySQL 5.7)',
+                $innodbPageSize
+            )
+        );
+
         $this->addPimRequirement(
             function_exists('exec'),
             'The exec() function should be enabled in order to run jobs',
@@ -193,17 +208,42 @@ class PimRequirements extends SymfonyRequirements
     }
 
     /**
+     * Returns a global MySQL configuration variable value
+     */
+    protected function getMySQLVariableValue(string $variableName) : ?string
+    {
+        $variableValue = null;
+
+        $stmt = $this->getConnection()->query(
+            sprintf("SELECT @@GLOBAL.%s", $variableName)
+        );
+
+        $variableValue = $stmt->fetchColumn();
+
+        if (false === $variableValue) {
+            $variableValue = null;
+        }
+
+        return $variableValue;
+    }
+
+
+    /**
      * Gets the MySQL server version thanks to a PDO connection.
-     *
+     */
+    protected function getMySQLVersion() : string
+    {
+        return $this->getConnection()->getAttribute(PDO::ATTR_SERVER_VERSION);
+    }
+
+    /**
      * If no connection is reached, or that "parameters.yml" do not exists, an
      * exception is thrown, then catch. If "parameters_test.yml" do not exists
      * either, then the exception is thrown again.
      * If it exits, an attempt to connect is done, and can result in an exception
      * if no connection is reached.
-     *
-     * @return string
      */
-    protected function getMySQLVersion()
+    protected function getConnection() : PDO
     {
         $file = file_get_contents(__DIR__.'/config/parameters.yml');
 
@@ -222,25 +262,14 @@ class PimRequirements extends SymfonyRequirements
                 );
             }
 
-            return $this->getConnection($parameters)->getAttribute(PDO::ATTR_SERVER_VERSION);
         } catch (RuntimeException $e) {
             $parameters = Yaml::parse(file_get_contents(__DIR__.'/config/parameters_test.yml'));
 
             if (null === $parameters) {
                 throw $e;
             }
-
-            return $this->getConnection($parameters)->getAttribute(PDO::ATTR_SERVER_VERSION);
         }
-    }
 
-    /**
-     * @param array $parameters
-     *
-     * @return PDO
-     */
-    protected function getConnection(array $parameters)
-    {
         return new PDO(
             sprintf(
                 'mysql:port=%s;host=%s',

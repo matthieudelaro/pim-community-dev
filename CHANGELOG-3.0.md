@@ -2,9 +2,10 @@
 
 ## Technical improvement
 
-- TIP-236: Merge Oro User bundle/component into Akeneo User bundle/component 
+- TIP-236: Merge Oro User bundle/component into Akeneo User bundle/component
 - GITHUB-8451: Add basic compatibility for PHP 7.2  (Thanks [janmyszkier](https://github.com/janmyszkier)!)
 - PIM-7371: Improve the performance to display the category tree in the product grid
+- TIP-879: Uses utf8mb4 as encoding for MySQL instead of the less efficient utf8
 
 ## Enhancements
 
@@ -12,6 +13,7 @@
 
 ## BC breaks
 
+- MySQL charset for Akeneo is now utf8mb4, instead of the flawed utf8. If you have custom table, you can convert them with `ALTER TABLE my_custom_table CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`. For Akeneo native tables, the migration scripts apply the conversion.
 - Move `Pim\Component\Catalog\ProductEvents` to `Akeneo\Pim\Enrichment\Component\Product\ProductEvents`
 - Move `Pim\Component\Catalog\FileStorage` to `Akeneo\Pim\Enrichment\Component\FileStorage`
 - Move `Pim\Component\Catalog\AttributeTypes` to `Akeneo\Pim\Structure\Component\AttributeTypes`

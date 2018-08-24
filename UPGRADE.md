@@ -385,7 +385,6 @@ find ./src/ -type f -print0 | xargs -0 sed -i 's/Pim\\Component\\Catalog\\Model\
 find ./src/ -type f -print0 | xargs -0 sed -i 's/Pim\\Component\\Catalog\\Model\\ValueInterface/Akeneo\\Pim\\Enrichment\\Component\\Product\\Model\\ValueInterface/g'
 find ./src/ -type f -print0 | xargs -0 sed -i 's/Pim\\Component\\Catalog\\Value/Akeneo\\Pim\\Enrichment\\Component\\Product\\Value/g'
 find ./src/ -type f -print0 | xargs -0 sed -i 's/Pim\\Component\\Catalog\\Model\\ProductModel/Akeneo\\Pim\\Enrichment\\Component\\Product\\Model\\ProductModel/g'
-find ./src/ -type f -print0 | xargs -0 sed -i 's/Pim\\Component\\Catalog\\Model\\ProductModel/Akeneo\\Pim\\Enrichment\\Component\\Product\\Model\\ProductModel/g'
 find ./src/ -type f -print0 | xargs -0 sed -i 's/Pim\\Component\\Catalog\\Model\\ProductModelInterface/Akeneo\\Pim\\Enrichment\\Component\\Product\\Model\\ProductModelInterface/g'
 find ./src/ -type f -print0 | xargs -0 sed -i 's/Pim\\Component\\Catalog\\Model\\Product/Akeneo\\Pim\\Enrichment\\Component\\Product\\Model\\Product/g'
 find ./src/ -type f -print0 | xargs -0 sed -i 's/Pim\\Component\\Catalog\\Model\\AbstractProduct/Akeneo\\Pim\\Enrichment\\Component\\Product\\Model\\AbstractProduct/g'

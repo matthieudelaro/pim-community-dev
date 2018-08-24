@@ -57,7 +57,7 @@ services:
             - { name: pim_versioning.update_guesser }
 
     pim_versioning.update_guesser.family_attribute_requirement:
-        class: Pim\Bundle\VersioningBundle\UpdateGuesser\FamilyAttributeRequirementUpdateGuesser
+        class: Akeneo\Tool\Bundle\VersioningBundle\UpdateGuesser\FamilyAttributeRequirementUpdateGuesser
         tags:
             - { name: pim_versioning.update_guesser }
 

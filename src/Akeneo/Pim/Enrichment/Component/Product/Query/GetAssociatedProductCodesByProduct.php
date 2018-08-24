@@ -1,6 +1,6 @@
 <?php
 
-namespace Pim\Component\Catalog\Query\AssociatedProduct;
+namespace Akeneo\Pim\Enrichment\Component\Product\Query;
 
 use Akeneo\Pim\Enrichment\Component\Product\Model\AssociationInterface;
 

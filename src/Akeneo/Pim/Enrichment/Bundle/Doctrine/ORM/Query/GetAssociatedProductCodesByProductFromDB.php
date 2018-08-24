@@ -1,10 +1,10 @@
 <?php
 
-namespace Pim\Bundle\CatalogBundle\Doctrine\ORM\Query;
+namespace Akeneo\Pim\Enrichment\Bundle\Doctrine\ORM\Query;
 
+use Akeneo\Pim\Enrichment\Component\Product\Model\AssociationInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use Pim\Component\Catalog\Model\AssociationInterface;
-use Pim\Component\Catalog\Query\AssociatedProduct\GetAssociatedProductCodesByProduct;
+use Akeneo\Pim\Enrichment\Component\Product\Query\GetAssociatedProductCodesByProduct;
 
 class GetAssociatedProductCodesByProductFromDB implements GetAssociatedProductCodesByProduct
 {

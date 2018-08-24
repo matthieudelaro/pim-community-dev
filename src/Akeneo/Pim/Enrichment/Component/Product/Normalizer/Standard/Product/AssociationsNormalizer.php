@@ -4,7 +4,7 @@ namespace Akeneo\Pim\Enrichment\Component\Product\Normalizer\Standard\Product;
 
 use Akeneo\Pim\Enrichment\Component\Product\Model\EntityWithAssociationsInterface;
 use Akeneo\Pim\Enrichment\Component\Product\Model\ProductModelInterface;
-use Pim\Component\Catalog\Query\AssociatedProduct\GetAssociatedProductCodesByProduct;
+use Akeneo\Pim\Enrichment\Component\Product\Query\GetAssociatedProductCodesByProduct;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**

@@ -3,8 +3,8 @@
 namespace Akeneo\Pim\Enrichment\Bundle\Doctrine\ORM\Query;
 
 use Akeneo\Pim\Enrichment\Component\Product\Model\AssociationInterface;
-use Doctrine\ORM\EntityManagerInterface;
 use Akeneo\Pim\Enrichment\Component\Product\Query\GetAssociatedProductCodesByProduct;
+use Doctrine\ORM\EntityManagerInterface;
 
 class GetAssociatedProductCodesByProductFromDB implements GetAssociatedProductCodesByProduct
 {

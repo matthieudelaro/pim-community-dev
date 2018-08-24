@@ -13,6 +13,8 @@ use Oro\Bundle\FilterBundle\Form\Type\Filter\BooleanFilterType;
  * @author    Romain Monceau <romain@akeneo.com>
  * @copyright 2013 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ *
+ * TODO @merge master rename in ProductCompletenessFilter
  */
 class CompletenessFilter extends BooleanFilter
 {
@@ -28,13 +30,12 @@ class CompletenessFilter extends BooleanFilter
 
         switch ($data['value']) {
             case BooleanFilterType::TYPE_YES:
-                $this->util->applyFilter($ds, 'completeness', Operators::AT_LEAST_COMPLETE, null);
+                $this->util->applyFilter($ds, 'completeness', Operators::EQUALS_ON_AT_LEAST_ONE_LOCALE, 100);
                 break;
             case BooleanFilterType::TYPE_NO:
-                $this->util->applyFilter($ds, 'completeness', Operators::AT_LEAST_INCOMPLETE, null);
+                $this->util->applyFilter($ds, 'completeness', Operators::LOWER_THAN_ON_AT_LEAST_ONE_LOCALE, 100);
                 break;
         }
-
 
         return true;
     }

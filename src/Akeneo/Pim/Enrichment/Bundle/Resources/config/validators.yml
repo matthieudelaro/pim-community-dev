@@ -320,10 +320,3 @@ services:
             - '@pim_catalog.repository.channel'
         tags:
             - { name: validator.constraint_validator, alias: filter_structure_locale_validator }
-
-    pim_connector.validator.constraints.filter_structure_attribute_validator:
-        class: 'Akeneo\Pim\Enrichment\Component\Product\Validator\Constraints\FilterStructureAttributeValidator'
-        arguments:
-            - '@pim_catalog.repository.attribute'
-        tags:
-            - { name: validator.constraint_validator, alias: filter_structure_attribute_validator }

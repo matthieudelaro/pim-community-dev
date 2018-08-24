@@ -25,7 +25,8 @@ class CompletenessFilterSpec extends ObjectBehavior
         FilterDatasourceAdapterInterface $datasource,
         $utility
     ) {
-        $utility->applyFilter($datasource, 'completeness', Operators::AT_LEAST_COMPLETE, null)->shouldBeCalled();
+        $utility->applyFilter($datasource, 'completeness', Operators::EQUALS_ON_AT_LEAST_ONE_LOCALE, 100)
+            ->shouldBeCalled();
 
         $this->apply($datasource, ['type' => null, 'value' => BooleanFilterType::TYPE_YES]);
     }
@@ -34,7 +35,8 @@ class CompletenessFilterSpec extends ObjectBehavior
         FilterDatasourceAdapterInterface $datasource,
         $utility
     ) {
-        $utility->applyFilter($datasource, 'completeness', Operators::AT_LEAST_INCOMPLETE, null)->shouldBeCalled();
+        $utility->applyFilter($datasource, 'completeness', Operators::LOWER_THAN_ON_AT_LEAST_ONE_LOCALE, 100)
+            ->shouldBeCalled();
 
         $this->apply($datasource, ['type' => null, 'value' => BooleanFilterType::TYPE_NO]);
     }

@@ -1,5 +1,9 @@
 # 2.3.x
 
+## Technical improvements
+
+- PIM-7601: Update Symfony to 3.4.14
+
 ## Bug fixes
 
 - PIM-7600: Change the default return value of ResetIndexesCommand to true to allow the --no-interaction parameter.

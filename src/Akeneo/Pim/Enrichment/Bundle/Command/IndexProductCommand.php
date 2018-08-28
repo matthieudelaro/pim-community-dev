@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Akeneo\Pim\Enrichment\Bundle\Command;
 
+use Akeneo\Pim\Enrich\Dto\Loader\ProductToIndexDtoLoasder;
 use Akeneo\Pim\Enrichment\Component\Product\Repository\ProductRepositoryInterface;
 use Akeneo\Tool\Bundle\ElasticsearchBundle\Refresh;
 use Akeneo\Tool\Component\StorageUtils\Indexer\BulkIndexerInterface;
@@ -27,14 +28,11 @@ class IndexProductCommand extends ContainerAwareCommand
     private const BULK_SIZE = 100;
     private const ERROR_CODE_USAGE = 1;
 
-    /** @var ProductRepositoryInterface */
-    private $productRepository;
+    /** @var ProductToIndexDtoLoader */
+    private $productToIndexDtoLoader;
 
     /** @var BulkIndexerInterface */
     private $bulkProductIndexer;
-
-    /** @var ObjectManager */
-    private $objectManager;
 
     /**
      * {@inheritdoc}
@@ -65,9 +63,8 @@ class IndexProductCommand extends ContainerAwareCommand
     {
         $this->checkIndexesExist();
 
-        $this->productRepository = $this->getContainer()->get('pim_catalog.repository.product');
+        $this->productToIndexDtoLoader = $this->getContainer()->get('akeneo.pim.enrichment.dto.loader.product_to_index');
         $this->bulkProductIndexer = $this->getContainer()->get('pim_catalog.elasticsearch.indexer.product');
-        $this->objectManager = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
         $isIndexAll = $input->getOption('all');
         $productIdentifiers = $input->getArgument('identifiers');
@@ -96,24 +93,25 @@ class IndexProductCommand extends ContainerAwareCommand
      */
     private function indexAll(OutputInterface $output): int
     {
-        $totalElements = (int) $this->productRepository->countAll();
+        $totalElements = (int) $this->productToIndexDtoLoader->countAll();
 
         $output->writeln(sprintf('<info>%s products to index</info>', $totalElements));
 
-        $lastProduct = null;
+        $lastProductId = 0;
         $progress = 0;
 
-        while (!empty($products = $this->productRepository->searchAfter($lastProduct, self::BULK_SIZE))) {
+        while (!empty($products = $this->productToIndexDtoLoader->loadAllPaginated($lastProductId, self::BULK_SIZE))) {
             $output->writeln(sprintf(
                 'Indexing products %d of %d',
                 $progress,
                 $totalElements
             ));
 
-            $this->bulkProductIndexer->indexAll($products, ['index_refresh' => Refresh::disable()]);
-            $this->objectManager->clear();
+//            $this->bulkProductIndexer->indexAll($products, ['index_refresh' => Refresh::disable()]);
+            var_dump($products);
 
             $lastProduct = end($products);
+            $lastProductId = $lastProduct->getId();
             $progress += count($products);
         }
 
@@ -130,53 +128,38 @@ class IndexProductCommand extends ContainerAwareCommand
      */
     private function index(OutputInterface $output, array $identifiers): int
     {
-        $products = $this->productRepository->findBy(['identifier' => $identifiers]);
-        $productsCount = count($products);
-
-        if ($productsCount !== count($identifiers)) {
-            $identifiersFound = [];
-            foreach ($products as $product) {
-                $identifiersFound[] = $product->getIdentifier();
-            }
-
-            $notFoundIdentifiers = array_diff($identifiers, $identifiersFound);
-            $output->writeln(sprintf(
-                '<error>Some products were not found for the given identifiers: %s</error>',
-                implode(', ', $notFoundIdentifiers)
-            ));
-        }
-
-        $output->writeln(sprintf('<info>%d products found for indexing</info>', $productsCount));
-
-        $i = 0;
-        $productBulk = [];
+        $offset = 0;
+        $identifierBulk = [];
         $totalProductsIndexed = 0;
-        foreach ($products as $product) {
-            $productBulk[] = $product;
 
-            $i++;
+        while (count($identifierBulk = array_slice($identifiers, $offset, self::BULK_SIZE)) > 0) {
 
-            if (0 === $i % self::BULK_SIZE) {
-                $this->bulkProductIndexer->indexAll($productBulk, ['index_refresh' => Refresh::disable()]);
-                $this->objectManager->clear();
+            $offset += self::BULK_SIZE;
 
-                $productBulk = [];
+            $products = $this->productToIndexDtoLoader->loadByIdentifiers($identifierBulk);
+            $productsCount = count($products);
 
-                $totalProductsIndexed += self::BULK_SIZE;
+            if ($productsCount !== count($identifierBulk)) {
+                $identifiersFound = [];
+                foreach ($products as $product) {
+                    $identifiersFound[] = $product->getIdentifier();
+                }
 
+                $notFoundIdentifiers = array_diff($identifierBulk, $identifiersFound);
                 $output->writeln(sprintf(
-                    '%d on %d products indexed',
-                    $totalProductsIndexed,
-                    $productsCount
+                    '<error>Some products were not found for the given identifiers: %s</error>',
+                    implode(', ', $notFoundIdentifiers)
                 ));
             }
-        }
 
-        if (!empty($productBulk)) {
-            $this->bulkProductIndexer->indexAll($productBulk, ['index_refresh' => Refresh::disable()]);
-            $this->objectManager->clear();
+            var_dump($products);
+            //$this->bulkProductIndexer->indexAll($products, ['index_refresh' => Refresh::disable()]);
+            $totalProductsIndexed += count($products);
 
-            $totalProductsIndexed += count($productBulk);
+            $output->writeln(sprintf(
+                '%d products indexed',
+                $totalProductsIndexed
+            ));
         }
 
         return $totalProductsIndexed;

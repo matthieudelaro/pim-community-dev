@@ -20,13 +20,13 @@ abstract class AbstractCompleteness implements CompletenessInterface
     /** @var int|string */
     protected $id;
 
-    /** @var ProductInterface */
+    /** @var int */
     protected $product;
 
-    /** @var LocaleInterface */
+    /** @var int */
     protected $locale;
 
-    /** @var ChannelInterface */
+    /** @var int */
     protected $channel;
 
     /** @var int */
@@ -41,25 +41,17 @@ abstract class AbstractCompleteness implements CompletenessInterface
     /** @var Collection */
     protected $missingAttributes;
 
-    /**
-     * @param ProductInterface $product
-     * @param ChannelInterface $channel
-     * @param LocaleInterface  $locale
-     * @param Collection       $missingAttributes
-     * @param int              $missingCount
-     * @param int              $requiredCount
-     */
     public function __construct(
-        ProductInterface $product,
-        ChannelInterface $channel,
-        LocaleInterface $locale,
+        int $productId,
+        int $channelId,
+        int $localeId,
         Collection $missingAttributes,
-        $missingCount,
-        $requiredCount
+        int $missingCount,
+        int $requiredCount
     ) {
-        $this->product = $product;
-        $this->channel = $channel;
-        $this->locale = $locale;
+        $this->product = $productId;
+        $this->channel = $channelId;
+        $this->locale = $localeId;
         $this->missingAttributes = $missingAttributes;
         $this->missingCount = $missingCount;
         $this->requiredCount = $requiredCount;

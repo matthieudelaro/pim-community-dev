@@ -1,0 +1,7 @@
+services:
+    akeneo.pim.enrichment.dto.loader.product_to_index:
+        class: 'Akeneo\Pim\Enrichment\Bundle\Dto\Loader\ProductToIndexDtoLoader'
+        arguments:
+            - '@database_connection'
+            - '@pim_catalog.factory.value_collection'
+            - '@akeneo_storage_utils.doctrine.table_name_builder'

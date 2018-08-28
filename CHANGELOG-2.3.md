@@ -4,6 +4,11 @@
 
 - PIM-7600: Change the default return value of ResetIndexesCommand to true to allow the --no-interaction parameter.
 
+## BC breaks
+
+- Change the constructor of `Pim\Bundle\AnalyticsBundle\DataCollector\DBDataCollector.php` to add `Pim\Bundle\CatalogVolumeMonitoringBundle\Persistence\Query\Sql\AverageMaxProductValuesPerFamily` as a new argument
+- Change the constructor of `Pim\Bundle\AnalyticsBundle\DataCollector\AttributeDataCollector.php` to add `Pim\Bundle\CatalogVolumeMonitoringBundle\Persistence\Query\Sql\CountUseableAsGridFilterAttributes`, `Pim\Bundle\CatalogVolumeMonitoringBundle\Persistence\Query\Sql\AverageMaxLocalizableAttributesPerFamily`, `Pim\Bundle\CatalogVolumeMonitoringBundle\Persistence\Query\Sql\AverageMaxScopableAttributesPerFamily` and `Pim\Bundle\CatalogVolumeMonitoringBundle\Persistence\Query\Sql\AverageMaxLocalizableAndScopableAttributesPerFamily` as new arguments
+
 # 2.3.5 (2018-08-22)
 
 ## Bug fixes

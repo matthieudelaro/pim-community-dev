@@ -4,6 +4,7 @@
 
 - PIM-7600: Change the default return value of ResetIndexesCommand to true to allow the --no-interaction parameter.
 - PIM-7572: Cross to remove associations displayed at PV level whereas association is done at PM level
+- PIM-7609: PIM-7609: Handle 'empty' and 'not empty' filter types in string filter
 
 # 2.3.5 (2018-08-22)
 
